@@ -1,0 +1,79 @@
+name: Log Commits to Markdown
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  log-commits:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Gather commit info
+        run: |
+          mkdir -p docs
+          LOG_FILE=docs/COMMITS.md
+          TEMP_FILE=commits_tmp.md
+
+          echo "" > $TEMP_FILE
+
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            RANGE=${{ github.sha }}
+          else
+            RANGE=${{ github.event.before }}..${{ github.sha }}
+          fi
+
+          for commit in $(git rev-list $RANGE); do
+            AUTHOR=$(git log -1 --pretty=format:"%an" $commit)
+            DATE=$(git log -1 --pretty=format:"%ad" --date=iso $commit)
+            TITLE=$(git log -1 --pretty=format:"%s" $commit)
+
+            echo "## $TITLE" >> $TEMP_FILE
+            echo "- **Commit:** \`$commit\`" >> $TEMP_FILE
+            echo "- **Date:** $DATE" >> $TEMP_FILE
+            echo "- **Author:** $AUTHOR" >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+
+            echo "### Preview (first 3 lines of changes)" >> $TEMP_FILE
+            echo '```diff' >> $TEMP_FILE
+            git show --no-color $commit | head -n 3 >> $TEMP_FILE
+            echo '```' >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+
+            echo "<details><summary>Full changes</summary>" >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+            echo '```diff' >> $TEMP_FILE
+            git show --no-color $commit >> $TEMP_FILE
+            echo '```' >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+            echo "</details>" >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+          done
+
+          if [ -f "$LOG_FILE" ]; then
+            cat $LOG_FILE >> $TEMP_FILE
+          fi
+          mv $TEMP_FILE $LOG_FILE
+
+      - name: Commit and push log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/COMMITS.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update commit log [skip ci]"
+            git push
+          fi

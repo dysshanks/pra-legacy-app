@@ -1,0 +1,51 @@
+name: Generate README
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get repository name
+        id: repo
+        run: echo "repo_name=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+
+      - name: Check if README exists
+        id: check_readme
+        run: |
+          if [ -f README.md ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate README
+        if: ${{ steps.check_readme.outputs.exists == 'false' }}
+        run: |
+          echo "# ${{ steps.repo.outputs.repo_name }}" > README.md
+          echo "" >> README.md
+          echo "![Build](https://github.com/${{ github.repository }}/actions/workflows/readme-generator.yml/badge.svg)" >> README.md
+          echo "![Issues](https://img.shields.io/github/issues/${{ github.repository }})" >> README.md
+          echo "![Stars](https://img.shields.io/github/stars/${{ github.repository }})" >> README.md
+          echo "![License](https://img.shields.io/github/license/${{ github.repository }})" >> README.md
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "*This README was auto-generated.*" >> README.md
+
+      - name: Commit and push README
+        if: ${{ steps.check_readme.outputs.exists == 'false' }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          git add README.md
+          git commit -m "Auto-generate README.md"
+          git push
