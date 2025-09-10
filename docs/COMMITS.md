@@ -1,5 +1,94 @@
 
 ## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+- **Commit:** `de9c157f1faea39204f102671084e069e6bf3a25`
+- **Date:** 2025-09-10 09:00:22 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit de9c157f1faea39204f102671084e069e6bf3a25
+Merge: d7ef5d6 c2668b7
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit de9c157f1faea39204f102671084e069e6bf3a25
+Merge: d7ef5d6 c2668b7
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Sep 10 09:00:22 2025 +0200
+
+    Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+    
+    merge
+
+```
+
+</details>
+
+## made a new database migration please run php artisan migrate to update the database
+- **Commit:** `d7ef5d6d681df33c275803f5811e8249a550e5c5`
+- **Date:** 2025-09-10 08:53:01 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit d7ef5d6d681df33c275803f5811e8249a550e5c5
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Sep 10 08:53:01 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit d7ef5d6d681df33c275803f5811e8249a550e5c5
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Sep 10 08:53:01 2025 +0200
+
+    made a new database migration please run php artisan migrate to update the database
+
+diff --git a/database/migrations/2025_09_10_064924_create_user_table.php b/database/migrations/2025_09_10_064924_create_user_table.php
+new file mode 100644
+index 0000000..ffe80a8
+--- /dev/null
++++ b/database/migrations/2025_09_10_064924_create_user_table.php
+@@ -0,0 +1,29 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     */
++    public function up(): void
++    {
++        Schema::create('user', function (Blueprint $table) {
++            $table->id();
++            $table->string('name');
++            $table->string('email');
++            $table->timestamps();
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     */
++    public function down(): void
++    {
++        Schema::dropIfExists('user');
++    }
++};
+```
+
+</details>
+
+
+## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
 - **Commit:** `8d57b9aab6742d0711bbb957591c27dd13ff9034`
 - **Date:** 2025-09-08 10:06:36 +0200
 - **Author:** dysshanks
