@@ -6173,6 +6173,10 @@ button.bg-light:focus {
 .bg-dark {
     background-color: #343a40 !important;
 }
+.bg-blue
+{
+    background-color: #357ae8 !important;
+}
 
 a.bg-dark:hover, a.bg-dark:focus,
 button.bg-dark:hover,
@@ -10024,4 +10028,15 @@ a.text-dark:hover, a.text-dark:focus {
     padding: 0 5px;
     color: #ccc;
     content: "/ ";
+}
+
+.button
+{
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.button:hover
+{
+    background-color: #1f6fb2 !important;
 }
