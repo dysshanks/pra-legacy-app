@@ -1,4 +1,86 @@
 
+## ticket 7
+- **Commit:** `a709ebd490b3355fc45bdfe831037d8c80185874`
+- **Date:** 2025-09-17 10:07:29 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit a709ebd490b3355fc45bdfe831037d8c80185874
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Sep 17 10:07:29 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit a709ebd490b3355fc45bdfe831037d8c80185874
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Sep 17 10:07:29 2025 +0200
+
+    ticket 7
+
+diff --git a/public/css/app.css b/public/css/app.css
+index e954bd8..f1ad6af 100644
+--- a/public/css/app.css
++++ b/public/css/app.css
+@@ -6173,6 +6173,10 @@ button.bg-light:focus {
+ .bg-dark {
+     background-color: #343a40 !important;
+ }
++.bg-blue
++{
++    background-color: #357ae8 !important;
++}
+ 
+ a.bg-dark:hover, a.bg-dark:focus,
+ button.bg-dark:hover,
+@@ -10025,3 +10029,14 @@ .breadcrumb > li + li:before {
+     color: #ccc;
+     content: "/ ";
+ }
++
++.button
++{
++    padding: 5px;
++    border-radius: 10px;
++}
++
++.button:hover
++{
++    background-color: #1f6fb2 !important;
++}
+diff --git a/resources/views/components/header.blade.php b/resources/views/components/header.blade.php
+index 2218cb5..22c983e 100644
+--- a/resources/views/components/header.blade.php
++++ b/resources/views/components/header.blade.php
+@@ -2,7 +2,7 @@
+ <div class="jumbotron">
+     <div class="container">
+         <a href="/" title="{{ __('misc.home_alt') }}" alt="{{ __('misc.home_alt') }}">
+-            <h1>{{ __('misc.homepage_title') }}</h1>
++            <h1 class="bg-blue button d-inline text-white">{{ __('misc.homepage_title') }}</h1>
+         </a>
+         {{ $introduction_text ?? '' }}
+     </div>
+diff --git a/resources/views/components/navbar.blade.php b/resources/views/components/navbar.blade.php
+index 2b2d808..71820d0 100644
+--- a/resources/views/components/navbar.blade.php
++++ b/resources/views/components/navbar.blade.php
+@@ -1,7 +1,7 @@
+ <nav class="navbar navbar-expand navbar-dark bg-dark">
+     <div class="container">
+         <div class="navbar-header mr-auto">
+-            <a class="navbar-brand" href="/" title="{{ __('misc.home_alt') }}">{{ __('misc.homepage_title') }}</a>
++            <a class="navbar-brand bg-blue button" href="/" title="{{ __('misc.home_alt') }}">{{ __('misc.homepage_title') }}</a>
+         </div>
+         <div id="navbar" class="form-inline">
+ 
+```
+
+</details>
+
+
 ## ticket 6
 - **Commit:** `f95e09bf2fb3a8016c1e9de988861bb1ae3e2c0d`
 - **Date:** 2025-09-17 09:07:28 +0200
