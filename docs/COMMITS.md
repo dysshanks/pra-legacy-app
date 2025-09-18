@@ -1,4 +1,187 @@
 
+## ticket 12 (ik moest ook ticket 1 maken aangezien die niet gepushed was)
+- **Commit:** `cb8b40c9efdbd9b07c98469e8e8848c7af735e02`
+- **Date:** 2025-09-18 20:12:48 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit cb8b40c9efdbd9b07c98469e8e8848c7af735e02
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Sep 18 20:12:48 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit cb8b40c9efdbd9b07c98469e8e8848c7af735e02
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Sep 18 20:12:48 2025 +0200
+
+    ticket 12 (ik moest ook ticket 1 maken aangezien die niet gepushed was)
+
+diff --git a/app/Http/Controllers/ContactController.php b/app/Http/Controllers/ContactController.php
+new file mode 100644
+index 0000000..8ed84e0
+--- /dev/null
++++ b/app/Http/Controllers/ContactController.php
+@@ -0,0 +1,13 @@
++<?php
++
++namespace App\Http\Controllers;
++
++use Illuminate\Http\Request;
++
++class ContactController extends Controller
++{
++    public function index()
++    {
++        return view('pages.contact');
++    }
++}
+diff --git a/public/css/app.css b/public/css/app.css
+index f1ad6af..59a4ad8 100644
+--- a/public/css/app.css
++++ b/public/css/app.css
+@@ -6580,6 +6580,11 @@ .embed-responsive-1by1::before {
+     padding-top: 100%;
+ }
+ 
++.flex
++{
++    display: flex !important;
++}
++
+ .flex-row {
+     flex-direction: row !important;
+ }
+@@ -10040,3 +10045,12 @@ .button:hover
+ {
+     background-color: #1f6fb2 !important;
+ }
++
++.footer-main
++{
++    padding: 2em;
++    position: fixed;
++    left: 0;
++    bottom: 0;
++    width: 100%;
++}
+diff --git a/resources/views/components/about_us.blade.php b/resources/views/components/about_us.blade.php
+index e433ec2..448c813 100644
+--- a/resources/views/components/about_us.blade.php
++++ b/resources/views/components/about_us.blade.php
+@@ -1,4 +1,4 @@
+-<div class="about">
++<div class="about w-25 mr-auto">
+     <h3>about us</h3>
+     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, amet, aut esse facere fugiat illo laborum, maiores omnis quaerat rerum sit ullam voluptate. Aliquam delectus nihil quod recusandae tempora temporibus.</p>
+ </div>
+diff --git a/resources/views/components/footer.blade.php b/resources/views/components/footer.blade.php
+index a2d2177..d306807 100644
+--- a/resources/views/components/footer.blade.php
++++ b/resources/views/components/footer.blade.php
+@@ -1,5 +1,5 @@
+ 
+-<footer>
++<footer class="footer-main flex flex-row-reverse justify-content-center align-baseline bg-dark text-white">
+ 	© {{ __('misc.copyright') }}
+     <x-about_us/>
+     <x-links/>
+diff --git a/resources/views/components/links.blade.php b/resources/views/components/links.blade.php
+index f058eb3..ef320e2 100644
+--- a/resources/views/components/links.blade.php
++++ b/resources/views/components/links.blade.php
+@@ -1,4 +1,4 @@
+-<div class="links">
++<div class="links mr-5">
+     <p>social links</p>
+     <ul>
+         <li><a href="#">instagram</a></li>
+@@ -7,3 +7,10 @@
+         <li><a href="#">twitter</a></li>
+     </ul>
+ </div>
++<div class="links mr-5">
++    <p>webpages</p>
++    <ul>
++        <li><a href="{{route('home')}}">home</a></li>
++        <li><a href="{{route('contact')}}">contact</a></li>
++    </ul>
++</div>
+diff --git a/resources/views/components/navbar.blade.php b/resources/views/components/navbar.blade.php
+index 71820d0..a1965ca 100644
+--- a/resources/views/components/navbar.blade.php
++++ b/resources/views/components/navbar.blade.php
+@@ -1,8 +1,9 @@
+ <nav class="navbar navbar-expand navbar-dark bg-dark">
+     <div class="container">
+-        <div class="navbar-header mr-auto">
++        <div class="navbar-header">
+             <a class="navbar-brand bg-blue button" href="/" title="{{ __('misc.home_alt') }}">{{ __('misc.homepage_title') }}</a>
+         </div>
++        <nav class="mr-auto ml-1 flex flex-row"><a href="{{route('home')}}" class="mr-3">home</a><a href="{{route('contact')}}">contact</a></nav>
+         <div id="navbar" class="form-inline">
+ 
+             <script>
+diff --git a/resources/views/pages/contact.blade.php b/resources/views/pages/contact.blade.php
+new file mode 100644
+index 0000000..4004c22
+--- /dev/null
++++ b/resources/views/pages/contact.blade.php
+@@ -0,0 +1,24 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <x-head/>
++</head>
++<body>
++
++<x-navbar/>
++<x-header/>
++<form action="">
++    <input type="text" name="name" id="name">
++    <input type="email" name="email" id="email">
++    <textarea name="message" id="message" cols="30" rows="10"></textarea>
++    <input type="submit">
++</form>
++<!-- Bootstrap core JavaScript
++================================================== -->
++<!-- Placed at the end of the document so the pages load faster -->
++<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
++<script>//window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
++<script src="{{ asset('/js/app.js') }}"></script>
++<x-footer/>
++</body>
++</html>
+diff --git a/routes/web.php b/routes/web.php
+index 94ad1e8..348b4de 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -33,6 +33,7 @@
+ use App\Http\Controllers\ProductCategoryController;
+ use App\Http\Controllers\SitemapController;
+ use App\Http\Controllers\LocaleController;
++use App\Http\Controllers\ContactController;
+ 
+ // Homepage
+ Route::get('/', function () {
+@@ -40,6 +41,9 @@
+     return view('pages.homepage', compact('brands'));
+ })->name('home');
+ 
++// contact page
++Route::get('/contact', [ContactController::class, "index"])->name("contact");
++
+ Route::get('/manual/{language}/{brand_slug}/', [RedirectController::class, 'brand']);
+ Route::get('/manual/{language}/{brand_slug}/brand.html', [RedirectController::class, 'brand']);
+ 
+```
+
+</details>
+
+
 ## ticket 7
 - **Commit:** `a709ebd490b3355fc45bdfe831037d8c80185874`
 - **Date:** 2025-09-17 10:07:29 +0200
