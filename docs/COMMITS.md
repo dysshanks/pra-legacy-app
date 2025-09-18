@@ -1,4 +1,100 @@
 
+## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app merge or sum ig
+- **Commit:** `f9595f4adb48a732c8df90c0a046d2edc16e56b0`
+- **Date:** 2025-09-18 21:15:20 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit f9595f4adb48a732c8df90c0a046d2edc16e56b0
+Merge: 3f87af5 e8a09ab
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit f9595f4adb48a732c8df90c0a046d2edc16e56b0
+Merge: 3f87af5 e8a09ab
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Sep 18 21:15:20 2025 +0200
+
+    Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+    merge or sum ig
+
+```
+
+</details>
+
+## ticket 5
+- **Commit:** `3f87af58c8c48f5e242b55739ad73a881d9a1c7d`
+- **Date:** 2025-09-18 21:15:09 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 3f87af58c8c48f5e242b55739ad73a881d9a1c7d
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Sep 18 21:15:09 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 3f87af58c8c48f5e242b55739ad73a881d9a1c7d
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Sep 18 21:15:09 2025 +0200
+
+    ticket 5
+
+diff --git a/public/css/app.css b/public/css/app.css
+index 59a4ad8..471e94c 100644
+--- a/public/css/app.css
++++ b/public/css/app.css
+@@ -10054,3 +10054,17 @@ .footer-main
+     bottom: 0;
+     width: 100%;
+ }
++
++.grid
++{
++    display: grid;
++    grid-auto-flow: column;
++}
++.grid-gap
++{
++    grid-gap: 2em;
++}
++.grid-row-5
++{
++    grid-template-rows: repeat(5, 1fr);
++}
+diff --git a/resources/views/pages/type_list.blade.php b/resources/views/pages/type_list.blade.php
+index 610031d..784ef8a 100644
+--- a/resources/views/pages/type_list.blade.php
++++ b/resources/views/pages/type_list.blade.php
+@@ -8,14 +8,10 @@
+ 
+     <p>{{ __('introduction_texts.type_list', ['brand'=>$brand->name]) }}</p>
+ 
+-        <div class="container">
+-            <ul>
++        <div class="container grid grid-gap grid-row-5">
+             @foreach($types as $type)
+-                <li>
+-                    <a href="/{{ $brand->id }}/{{ $brand->name_url_encoded }}/{{ $type->id }}/{{ $type->name_url_encoded }}/">{{ $type->name }}</a>
+-                </li>
++                <a href="/{{ $brand->id }}/{{ $brand->name_url_encoded }}/{{ $type->id }}/{{ $type->name_url_encoded }}/" class="d-inline">{{ $type->name }}</a>
+             @endforeach
+-            </ul>
+         </div>
+ 
+ </x-layouts.app>
+```
+
+</details>
+
+
 ## ticket 12 (ik moest ook ticket 1 maken aangezien die niet gepushed was)
 - **Commit:** `cb8b40c9efdbd9b07c98469e8e8848c7af735e02`
 - **Date:** 2025-09-18 20:12:48 +0200
