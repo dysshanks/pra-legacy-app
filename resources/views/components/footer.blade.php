@@ -1,5 +1,5 @@
 
-<footer>
+<footer class="footer-main flex flex-row-reverse justify-content-center align-baseline bg-dark text-white">
 	© {{ __('misc.copyright') }}
     <x-about_us/>
     <x-links/>

@@ -1,8 +1,9 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container">
-        <div class="navbar-header mr-auto">
+        <div class="navbar-header">
             <a class="navbar-brand bg-blue button" href="/" title="{{ __('misc.home_alt') }}">{{ __('misc.homepage_title') }}</a>
         </div>
+        <nav class="mr-auto ml-1 flex flex-row"><a href="{{route('home')}}" class="mr-3">home</a><a href="{{route('contact')}}">contact</a></nav>
         <div id="navbar" class="form-inline">
 
             <script>

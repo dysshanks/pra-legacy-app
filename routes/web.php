@@ -33,12 +33,16 @@ use App\Http\Controllers\ManualController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\ContactController;
 
 // Homepage
 Route::get('/', function () {
     $brands = Brand::all()->sortBy('name');
     return view('pages.homepage', compact('brands'));
 })->name('home');
+
+// contact page
+Route::get('/contact', [ContactController::class, "index"])->name("contact");
 
 Route::get('/manual/{language}/{brand_slug}/', [RedirectController::class, 'brand']);
 Route::get('/manual/{language}/{brand_slug}/brand.html', [RedirectController::class, 'brand']);
