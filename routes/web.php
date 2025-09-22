@@ -38,7 +38,9 @@ use App\Http\Controllers\ContactController;
 // Homepage
 Route::get('/', function () {
     $brands = Brand::all()->sortBy('name');
-    return view('pages.homepage', compact('brands'));
+    // Populairste handleidingen ophalen op basis van popularity
+    $popularManuals = \App\Models\Manual::with('brand')->orderByDesc('popularity')->take(10)->get();
+    return view('pages.homepage', compact('brands', 'popularManuals'));
 })->name('home');
 
 // contact page

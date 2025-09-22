@@ -12,6 +12,16 @@
         </x-slot:title>
     </h1>
 
+    <!-- Populairste handleidingen -->
+    <div class="container mb-4">
+        <h2>Top 10 populairste handleidingen</h2>
+        <ul>
+            @foreach($popularManuals as $manual)
+                <li>{{ $manual->brand->name }}: {{ $manual->type }}</li>
+            @endforeach
+        </ul>
+    </div>
+
 
     <?php
     $size = count($brands);

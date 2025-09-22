@@ -5,9 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Manual extends Model
 {
+    protected $fillable = [
+        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer'
+    ];
     use HasFactory;
+
+    // Relatie naar Brand
+    public function brand()
+    {
+        return $this->belongsTo(\App\Models\Brand::class);
+    }
 
     // Returns the filesize in a human readable format
     public function getFilesizeHumanReadableAttribute(){

@@ -9,7 +9,18 @@
     </x-slot:breadcrumb>
 
 
+
     <h1>{{ $brand->name }}</h1>
+
+    <!-- Populairste handleidingen van dit merk -->
+    <div class="container mb-4">
+        <h2>Top 5 populairste handleidingen</h2>
+        <ul>
+            @foreach($popularManuals as $manual)
+                <li>{{ $manual->name }}</li>
+            @endforeach
+        </ul>
+    </div>
 
     <p>{{ __('introduction_texts.type_list', ['brand'=>$brand->name]) }}</p>
 
