@@ -1,4 +1,241 @@
 
+## Toon populairste handleidingen op homepage en merkpagina
+- **Commit:** `ad2c5f065f344dbb36760a19af03f40b1509f1df`
+- **Date:** 2025-09-22 09:46:35 +0100
+- **Author:** xavi
+
+### Preview (first 3 lines of changes)
+```diff
+commit ad2c5f065f344dbb36760a19af03f40b1509f1df
+Author: xavi <76852887+Ksaavie@users.noreply.github.com>
+Date:   Mon Sep 22 09:46:35 2025 +0100
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit ad2c5f065f344dbb36760a19af03f40b1509f1df
+Author: xavi <76852887+Ksaavie@users.noreply.github.com>
+Date:   Mon Sep 22 09:46:35 2025 +0100
+
+    Toon populairste handleidingen op homepage en merkpagina
+    
+    - Op de homepage worden nu de 10 populairste handleidingen getoond boven de merkenlijst, in het formaat: "[brand]: [type]".
+    - Op de merkpagina worden nu de 5 populairste handleidingen van dat merk getoond boven de volledige lijst, in het formaat: "[type]".
+    - Populariteit wordt bepaald door het veld 'popularity' in de tabel manuals (hoe hoger, hoe populairder).
+    - Je kunt de populariteit van handleidingen aanpassen via de database (kolom 'popularity' in 'manuals').
+
+diff --git a/.env.example b/.env.example
+deleted file mode 100644
+index 44d6125..0000000
+--- a/.env.example
++++ /dev/null
+@@ -1,59 +0,0 @@
+-APP_NAME=4S_Manuals
+-APP_ENV=local
+-APP_KEY=
+-APP_DEBUG=true
+-APP_URL=http://4s_manuals.test
+-
+-LOG_CHANNEL=stack
+-LOG_DEPRECATIONS_CHANNEL=null
+-LOG_LEVEL=debug
+-
+-DB_CONNECTION=mysql
+-DB_HOST=127.0.0.1
+-DB_PORT=3306
+-DB_DATABASE=4s_manuals
+-DB_USERNAME=root
+-DB_PASSWORD=
+-
+-BROADCAST_DRIVER=log
+-CACHE_DRIVER=file
+-FILESYSTEM_DISK=local
+-QUEUE_CONNECTION=sync
+-SESSION_DRIVER=file
+-SESSION_LIFETIME=120
+-
+-MEMCACHED_HOST=127.0.0.1
+-
+-REDIS_HOST=127.0.0.1
+-REDIS_PASSWORD=null
+-REDIS_PORT=6379
+-
+-MAIL_MAILER=smtp
+-MAIL_HOST=mailpit
+-MAIL_PORT=1025
+-MAIL_USERNAME=null
+-MAIL_PASSWORD=null
+-MAIL_ENCRYPTION=null
+-MAIL_FROM_ADDRESS="hello@example.com"
+-MAIL_FROM_NAME="${APP_NAME}"
+-
+-AWS_ACCESS_KEY_ID=
+-AWS_SECRET_ACCESS_KEY=
+-AWS_DEFAULT_REGION=us-east-1
+-AWS_BUCKET=
+-AWS_USE_PATH_STYLE_ENDPOINT=false
+-
+-PUSHER_APP_ID=
+-PUSHER_APP_KEY=
+-PUSHER_APP_SECRET=
+-PUSHER_HOST=
+-PUSHER_PORT=443
+-PUSHER_SCHEME=https
+-PUSHER_APP_CLUSTER=mt1
+-
+-VITE_APP_NAME="${APP_NAME}"
+-VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+-VITE_PUSHER_HOST="${PUSHER_HOST}"
+-VITE_PUSHER_PORT="${PUSHER_PORT}"
+-VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+-VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+diff --git a/app/Http/Controllers/BrandController.php b/app/Http/Controllers/BrandController.php
+index 7c828d7..8f82cc2 100644
+--- a/app/Http/Controllers/BrandController.php
++++ b/app/Http/Controllers/BrandController.php
+@@ -11,12 +11,15 @@ class BrandController extends Controller
+     public function show($brand_id, $brand_slug)
+     {
+ 
++
+         $brand = Brand::findOrFail($brand_id);
+-        $manuals = Manual::all()->where('brand_id', $brand_id);
++        $manuals = Manual::where('brand_id', $brand_id)->get();
++        $popularManuals = Manual::where('brand_id', $brand_id)->orderByDesc('popularity')->take(5)->get();
+ 
+         return view('pages/manual_list', [
+             "brand" => $brand,
+-            "manuals" => $manuals
++            "manuals" => $manuals,
++            "popularManuals" => $popularManuals
+         ]);
+ 
+     }
+diff --git a/app/Models/Manual.php b/app/Models/Manual.php
+index 0207388..ee95283 100644
+--- a/app/Models/Manual.php
++++ b/app/Models/Manual.php
+@@ -5,10 +5,20 @@
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+ 
++
+ class Manual extends Model
+ {
++    protected $fillable = [
++        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer'
++    ];
+     use HasFactory;
+ 
++    // Relatie naar Brand
++    public function brand()
++    {
++        return $this->belongsTo(\App\Models\Brand::class);
++    }
++
+     // Returns the filesize in a human readable format
+     public function getFilesizeHumanReadableAttribute(){
+ 
+diff --git a/database/migrations/2025_09_22_000001_add_popularity_to_manuals_table.php b/database/migrations/2025_09_22_000001_add_popularity_to_manuals_table.php
+new file mode 100644
+index 0000000..7032837
+--- /dev/null
++++ b/database/migrations/2025_09_22_000001_add_popularity_to_manuals_table.php
+@@ -0,0 +1,28 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     */
++    public function up(): void
++    {
++        Schema::table('manuals', function (Blueprint $table) {
++            $table->unsignedInteger('popularity')->default(0)->after('brand_id');
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     */
++    public function down(): void
++    {
++        Schema::table('manuals', function (Blueprint $table) {
++            $table->dropColumn('popularity');
++        });
++    }
++};
+diff --git a/resources/views/pages/homepage.blade.php b/resources/views/pages/homepage.blade.php
+index c6f1b02..8b824df 100644
+--- a/resources/views/pages/homepage.blade.php
++++ b/resources/views/pages/homepage.blade.php
+@@ -12,6 +12,16 @@
+         </x-slot:title>
+     </h1>
+ 
++    <!-- Populairste handleidingen -->
++    <div class="container mb-4">
++        <h2>Top 10 populairste handleidingen</h2>
++        <ul>
++            @foreach($popularManuals as $manual)
++                <li>{{ $manual->brand->name }}: {{ $manual->type }}</li>
++            @endforeach
++        </ul>
++    </div>
++
+ 
+     <?php
+     $size = count($brands);
+diff --git a/resources/views/pages/manual_list.blade.php b/resources/views/pages/manual_list.blade.php
+index c91b5ad..3c4af5b 100644
+--- a/resources/views/pages/manual_list.blade.php
++++ b/resources/views/pages/manual_list.blade.php
+@@ -9,8 +9,19 @@
+     </x-slot:breadcrumb>
+ 
+ 
++
+     <h1>{{ $brand->name }}</h1>
+ 
++    <!-- Populairste handleidingen van dit merk -->
++    <div class="container mb-4">
++        <h2>Top 5 populairste handleidingen</h2>
++        <ul>
++            @foreach($popularManuals as $manual)
++                <li>{{ $manual->name }}</li>
++            @endforeach
++        </ul>
++    </div>
++
+     <p>{{ __('introduction_texts.type_list', ['brand'=>$brand->name]) }}</p>
+ 
+ 
+diff --git a/routes/web.php b/routes/web.php
+index 348b4de..1b3150b 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -38,7 +38,9 @@
+ // Homepage
+ Route::get('/', function () {
+     $brands = Brand::all()->sortBy('name');
+-    return view('pages.homepage', compact('brands'));
++    // Populairste handleidingen ophalen op basis van popularity
++    $popularManuals = \App\Models\Manual::with('brand')->orderByDesc('popularity')->take(10)->get();
++    return view('pages.homepage', compact('brands', 'popularManuals'));
+ })->name('home');
+ 
+ // contact page
+```
+
+</details>
+
+
 ## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app merge or sum ig
 - **Commit:** `f9595f4adb48a732c8df90c0a046d2edc16e56b0`
 - **Date:** 2025-09-18 21:15:20 +0200
