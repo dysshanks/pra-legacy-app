@@ -49,6 +49,11 @@ Route::get('/contact', [ContactController::class, "index"])->name("contact");
 Route::get('/manual/{language}/{brand_slug}/', [RedirectController::class, 'brand']);
 Route::get('/manual/{language}/{brand_slug}/brand.html', [RedirectController::class, 'brand']);
 
+Route::get('/brands/{letter}', [BrandController::class, 'byLetter'])
+    ->where('letter', '[A-Z]')
+    ->name('pages.byLetter');
+
+
 Route::get('/datafeeds/{brand_slug}.xml', [RedirectController::class, 'datafeed']);
 
 // Locale routes

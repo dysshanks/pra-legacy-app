@@ -23,4 +23,13 @@ class BrandController extends Controller
         ]);
 
     }
+    public function byLetter($letter)
+    {
+        $brands = \App\Models\Brand::where('name', 'LIKE', $letter . '%')
+            ->orderBy('name')
+            ->get();
+
+        return view('pages.byLetter', compact('brands', 'letter'));
+    }
+
 }
