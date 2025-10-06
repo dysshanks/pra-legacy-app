@@ -10,19 +10,24 @@ class BrandController extends Controller
 {
     public function show($brand_id, $brand_slug)
     {
-
-
         $brand = Brand::findOrFail($brand_id);
+
         $manuals = Manual::where('brand_id', $brand_id)->get();
-        $popularManuals = Manual::where('brand_id', $brand_id)->orderByDesc('popularity')->take(5)->get();
+        $popularManuals = Manual::where('brand_id', $brand_id)
+            ->orderByDesc('popularity')
+            ->take(5)
+            ->get();
+        $categories = Manual::where('brand_catagory', $brand->brand_catagory)->get();
 
         return view('pages/manual_list', [
             "brand" => $brand,
+            "catagory" => $categories,
             "manuals" => $manuals,
-            "popularManuals" => $popularManuals
+            "popularManuals" => $popularManuals,
+            "categories" => $categories
         ]);
-
     }
+
     public function byLetter($letter)
     {
         $brands = \App\Models\Brand::where('name', 'LIKE', $letter . '%')
