@@ -1,4 +1,4 @@
-<X-layouts.app>
+<x-layouts.app>
     @section('content')
         <h1>Merken die beginnen met {{ $letter }}</h1>
 
@@ -15,4 +15,4 @@
         </ul>
     @endsection
 
-</X-layouts.app>
+</x-layouts.app>
