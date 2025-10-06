@@ -1,4 +1,366 @@
 
+## ticket 15 + migrations en seeders
+- **Commit:** `6a090b217c9fcb4007e0e9b06eb3477ceae0f61e`
+- **Date:** 2025-10-06 09:45:26 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 6a090b217c9fcb4007e0e9b06eb3477ceae0f61e
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Mon Oct 6 09:45:26 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 6a090b217c9fcb4007e0e9b06eb3477ceae0f61e
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Mon Oct 6 09:45:26 2025 +0200
+
+    ticket 15 + migrations en seeders
+
+diff --git a/app/Http/Controllers/BrandController.php b/app/Http/Controllers/BrandController.php
+index 7326762..d4cf696 100644
+--- a/app/Http/Controllers/BrandController.php
++++ b/app/Http/Controllers/BrandController.php
+@@ -10,19 +10,24 @@ class BrandController extends Controller
+ {
+     public function show($brand_id, $brand_slug)
+     {
+-
+-
+         $brand = Brand::findOrFail($brand_id);
++
+         $manuals = Manual::where('brand_id', $brand_id)->get();
+-        $popularManuals = Manual::where('brand_id', $brand_id)->orderByDesc('popularity')->take(5)->get();
++        $popularManuals = Manual::where('brand_id', $brand_id)
++            ->orderByDesc('popularity')
++            ->take(5)
++            ->get();
++        $categories = Manual::where('brand_catagory', $brand->brand_catagory)->get();
+ 
+         return view('pages/manual_list', [
+             "brand" => $brand,
++            "catagory" => $categories,
+             "manuals" => $manuals,
+-            "popularManuals" => $popularManuals
++            "popularManuals" => $popularManuals,
++            "categories" => $categories
+         ]);
+-
+     }
++
+     public function byLetter($letter)
+     {
+         $brands = \App\Models\Brand::where('name', 'LIKE', $letter . '%')
+diff --git a/app/Models/Manual.php b/app/Models/Manual.php
+index ee95283..f2182e6 100644
+--- a/app/Models/Manual.php
++++ b/app/Models/Manual.php
+@@ -9,7 +9,7 @@
+ class Manual extends Model
+ {
+     protected $fillable = [
+-        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer'
++        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer', 'brand_catagory'
+     ];
+     use HasFactory;
+ 
+diff --git a/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php b/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php
+new file mode 100644
+index 0000000..268d691
+--- /dev/null
++++ b/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php
+@@ -0,0 +1,28 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    /**
++     * Run the migrations.
++     */
++    public function up(): void
++    {
++        Schema::table('manuals', function (Blueprint $table) {
++            $table->string("catagory");
++        });
++    }
++
++    /**
++     * Reverse the migrations.
++     */
++    public function down(): void
++    {
++        Schema::table('manuals', function (Blueprint $table) {
++            //
++        });
++    }
++};
+diff --git a/database/seeders/BrandSeeder.php b/database/seeders/BrandSeeder.php
+new file mode 100644
+index 0000000..22c7bed
+--- /dev/null
++++ b/database/seeders/BrandSeeder.php
+@@ -0,0 +1,23 @@
++<?php
++
++namespace Database\Seeders;
++
++use Illuminate\Database\Seeder;
++use Illuminate\Support\Facades\DB;
++
++class BrandSeeder extends Seeder
++{
++    /**
++     * Run the database seeds.
++     */
++    public function run(): void
++    {
++        DB::table('brands')->insert([
++            ['name' => 'Apple', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'Samsung', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'Sony', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'LG', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'Microsoft', 'created_at' => now(), 'updated_at' => now()],
++        ]);
++    }
++}
+diff --git a/database/seeders/ManualSeeder.php b/database/seeders/ManualSeeder.php
+new file mode 100644
+index 0000000..86c6fa9
+--- /dev/null
++++ b/database/seeders/ManualSeeder.php
+@@ -0,0 +1,78 @@
++<?php
++
++namespace Database\Seeders;
++
++use Illuminate\Database\Seeder;
++use Illuminate\Support\Facades\DB;
++
++class ManualSeeder extends Seeder
++{
++    /**
++     * Run the database seeds.
++     */
++    public function run(): void
++    {
++        DB::table('manuals')->insert([
++            [
++                'brand_id' => 1,
++                'name' => 'iPhone 15 User Guide',
++                'filesize' => 2048000,
++                'originUrl' => 'https://example.com/manuals/apple/iphone15.pdf',
++                'filename' => 'iphone15_user_guide.pdf',
++                'downloadedServer' => 'server-1',
++                'popularity' => 95,
++                'catagory' => 'Smartphone',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'brand_id' => 2,
++                'name' => 'Galaxy S23 User Manual',
++                'filesize' => 3050000,
++                'originUrl' => 'https://example.com/manuals/samsung/galaxy_s23.pdf',
++                'filename' => 'galaxy_s23_manual.pdf',
++                'downloadedServer' => 'server-2',
++                'popularity' => 87,
++                'catagory' => 'Smartphone',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'brand_id' => 3,
++                'name' => 'Sony Bravia Setup Guide',
++                'filesize' => 1250000,
++                'originUrl' => 'https://example.com/manuals/sony/bravia_setup.pdf',
++                'filename' => 'bravia_setup.pdf',
++                'downloadedServer' => 'server-1',
++                'popularity' => 73,
++                'catagory' => 'Television',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'brand_id' => 4,
++                'name' => 'LG Refrigerator Manual',
++                'filesize' => 2100000,
++                'originUrl' => 'https://example.com/manuals/lg/fridge.pdf',
++                'filename' => 'lg_fridge_manual.pdf',
++                'downloadedServer' => 'server-3',
++                'popularity' => 55,
++                'catagory' => 'Appliance',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'brand_id' => 5,
++                'name' => 'Surface Pro 9 Guide',
++                'filesize' => 1780000,
++                'originUrl' => 'https://example.com/manuals/microsoft/surface_pro9.pdf',
++                'filename' => 'surface_pro9_guide.pdf',
++                'downloadedServer' => 'server-2',
++                'popularity' => 62,
++                'catagory' => 'Laptop',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++        ]);
++    }
++}
+diff --git a/database/seeders/UserSeeder.php b/database/seeders/UserSeeder.php
+new file mode 100644
+index 0000000..a8c0b7e
+--- /dev/null
++++ b/database/seeders/UserSeeder.php
+@@ -0,0 +1,36 @@
++<?php
++
++namespace Database\Seeders;
++
++use Illuminate\Database\Seeder;
++use Illuminate\Support\Facades\DB;
++
++class UserSeeder extends Seeder
++{
++    /**
++     * Run the database seeds.
++     */
++    public function run(): void
++    {
++        DB::table('user')->insert([
++            [
++                'name' => 'Alice Johnson',
++                'email' => 'alice@example.com',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'name' => 'Bob Smith',
++                'email' => 'bob@example.com',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++            [
++                'name' => 'Charlie Brown',
++                'email' => 'charlie@example.com',
++                'created_at' => now(),
++                'updated_at' => now(),
++            ],
++        ]);
++    }
++}
+```
+
+</details>
+
+## ticket 16 a
+- **Commit:** `1f0d3bf38a964b970d3ac38983ae4449675dc10b`
+- **Date:** 2025-10-02 15:31:34 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 1f0d3bf38a964b970d3ac38983ae4449675dc10b
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Oct 2 15:31:34 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 1f0d3bf38a964b970d3ac38983ae4449675dc10b
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Thu Oct 2 15:31:34 2025 +0200
+
+    ticket 16 a
+
+diff --git a/app/Http/Controllers/BrandController.php b/app/Http/Controllers/BrandController.php
+index 8f82cc2..7326762 100644
+--- a/app/Http/Controllers/BrandController.php
++++ b/app/Http/Controllers/BrandController.php
+@@ -23,4 +23,13 @@ public function show($brand_id, $brand_slug)
+         ]);
+ 
+     }
++    public function byLetter($letter)
++    {
++        $brands = \App\Models\Brand::where('name', 'LIKE', $letter . '%')
++            ->orderBy('name')
++            ->get();
++
++        return view('pages.byLetter', compact('brands', 'letter'));
++    }
++
+ }
+diff --git a/resources/views/pages/byLetter.blade.php b/resources/views/pages/byLetter.blade.php
+new file mode 100644
+index 0000000..198347c
+--- /dev/null
++++ b/resources/views/pages/byLetter.blade.php
+@@ -0,0 +1,18 @@
++<X-layouts.app>
++    @section('content')
++        <h1>Merken die beginnen met {{ $letter }}</h1>
++
++        <ul>
++            @forelse($brands as $brand)
++                <li>
++                    <a href="{{ url('/' . $brand->id . '/' . $brand->slug . '/') }}">
++                        {{ $brand->name }}
++                    </a>
++                </li>
++            @empty
++                <li>Geen merken gevonden voor deze letter.</li>
++            @endforelse
++        </ul>
++    @endsection
++
++</X-layouts.app>
+diff --git a/resources/views/pages/homepage.blade.php b/resources/views/pages/homepage.blade.php
+index 8b824df..2ba4d95 100644
+--- a/resources/views/pages/homepage.blade.php
++++ b/resources/views/pages/homepage.blade.php
+@@ -14,6 +14,12 @@
+ 
+     <!-- Populairste handleidingen -->
+     <div class="container mb-4">
++        <h3>zoek bij nummer</h3>
++        <nav>
++            @foreach(range('A', 'Z') as $letter)
++                <a href="{{ route('pages.byLetter', $letter) }}">{{ $letter }}</a>
++            @endforeach
++        </nav>
+         <h2>Top 10 populairste handleidingen</h2>
+         <ul>
+             @foreach($popularManuals as $manual)
+diff --git a/routes/web.php b/routes/web.php
+index 1b3150b..a7e74b5 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -49,6 +49,11 @@
+ Route::get('/manual/{language}/{brand_slug}/', [RedirectController::class, 'brand']);
+ Route::get('/manual/{language}/{brand_slug}/brand.html', [RedirectController::class, 'brand']);
+ 
++Route::get('/brands/{letter}', [BrandController::class, 'byLetter'])
++    ->where('letter', '[A-Z]')
++    ->name('pages.byLetter');
++
++
+ Route::get('/datafeeds/{brand_slug}.xml', [RedirectController::class, 'datafeed']);
+ 
+ // Locale routes
+```
+
+</details>
+
+
 ## Toon populairste handleidingen op homepage en merkpagina
 - **Commit:** `ad2c5f065f344dbb36760a19af03f40b1509f1df`
 - **Date:** 2025-09-22 09:46:35 +0100
