@@ -1,4 +1,46 @@
 
+## small typo fix
+- **Commit:** `f6760449f7d005e71c5b8c38eb6da100821a7e8d`
+- **Date:** 2025-10-06 09:53:15 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit f6760449f7d005e71c5b8c38eb6da100821a7e8d
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Mon Oct 6 09:53:15 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit f6760449f7d005e71c5b8c38eb6da100821a7e8d
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Mon Oct 6 09:53:15 2025 +0200
+
+    small typo fix
+
+diff --git a/resources/views/pages/byLetter.blade.php b/resources/views/pages/byLetter.blade.php
+index 198347c..d68f337 100644
+--- a/resources/views/pages/byLetter.blade.php
++++ b/resources/views/pages/byLetter.blade.php
+@@ -1,4 +1,4 @@
+-<X-layouts.app>
++<x-layouts.app>
+     @section('content')
+         <h1>Merken die beginnen met {{ $letter }}</h1>
+ 
+@@ -15,4 +15,4 @@
+         </ul>
+     @endsection
+ 
+-</X-layouts.app>
++</x-layouts.app>
+```
+
+</details>
+
+
 ## ticket 15 + migrations en seeders
 - **Commit:** `6a090b217c9fcb4007e0e9b06eb3477ceae0f61e`
 - **Date:** 2025-10-06 09:45:26 +0200
