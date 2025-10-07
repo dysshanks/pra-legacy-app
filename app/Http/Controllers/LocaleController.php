@@ -16,7 +16,7 @@ class LocaleController extends Controller
             $request->session()->put('locale', $language_slug);
         }
 
-        return redirect()->route('home');
+        return redirect()->back();
     }
     /* public function changeLocale(Request $request)
     {

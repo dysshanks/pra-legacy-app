@@ -21,5 +21,17 @@
 
 
         </div><!--/.navbar-collapse -->
+        <div class="ml-auto d-flex align-items-center">
+            <table class="table table-sm table-borderless mb-0 text-right">
+                <tr>
+                    <td class="p-0 pr-2">
+                        <a href="/language/en/" class="{{ app()->getLocale() === 'en' ? 'font-weight-bold text-white' : 'text-muted' }}">EN</a>
+                    </td>
+                    <td class="p-0">
+                        <a href="/language/nl/" class="{{ app()->getLocale() === 'nl' ? 'font-weight-bold text-white' : 'text-muted' }}">NL</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </nav>
