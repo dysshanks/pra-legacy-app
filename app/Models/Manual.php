@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Manual extends Model
 {
     protected $fillable = [
-        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer', 'brand_catagory'
+        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer'
     ];
     use HasFactory;
 
