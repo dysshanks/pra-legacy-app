@@ -1,4 +1,294 @@
 
+## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+- **Commit:** `a03336f27cc44a843c80ab0cffc183551c669550`
+- **Date:** 2025-10-08 09:33:06 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit a03336f27cc44a843c80ab0cffc183551c669550
+Merge: af3409c 082b48b
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit a03336f27cc44a843c80ab0cffc183551c669550
+Merge: af3409c 082b48b
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 09:33:06 2025 +0200
+
+    Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+
+```
+
+</details>
+
+## Revert "ticket 15 + migrations en seeders"
+- **Commit:** `af3409c6f886ab72d0012e500fa8ad9ae0dcf437`
+- **Date:** 2025-10-08 09:33:00 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit af3409c6f886ab72d0012e500fa8ad9ae0dcf437
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 09:33:00 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit af3409c6f886ab72d0012e500fa8ad9ae0dcf437
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 09:33:00 2025 +0200
+
+    Revert "ticket 15 + migrations en seeders"
+    
+    This reverts commit 6a090b217c9fcb4007e0e9b06eb3477ceae0f61e.
+
+diff --git a/app/Http/Controllers/BrandController.php b/app/Http/Controllers/BrandController.php
+index d4cf696..7326762 100644
+--- a/app/Http/Controllers/BrandController.php
++++ b/app/Http/Controllers/BrandController.php
+@@ -10,24 +10,19 @@ class BrandController extends Controller
+ {
+     public function show($brand_id, $brand_slug)
+     {
+-        $brand = Brand::findOrFail($brand_id);
+ 
++
++        $brand = Brand::findOrFail($brand_id);
+         $manuals = Manual::where('brand_id', $brand_id)->get();
+-        $popularManuals = Manual::where('brand_id', $brand_id)
+-            ->orderByDesc('popularity')
+-            ->take(5)
+-            ->get();
+-        $categories = Manual::where('brand_catagory', $brand->brand_catagory)->get();
++        $popularManuals = Manual::where('brand_id', $brand_id)->orderByDesc('popularity')->take(5)->get();
+ 
+         return view('pages/manual_list', [
+             "brand" => $brand,
+-            "catagory" => $categories,
+             "manuals" => $manuals,
+-            "popularManuals" => $popularManuals,
+-            "categories" => $categories
++            "popularManuals" => $popularManuals
+         ]);
+-    }
+ 
++    }
+     public function byLetter($letter)
+     {
+         $brands = \App\Models\Brand::where('name', 'LIKE', $letter . '%')
+diff --git a/app/Models/Manual.php b/app/Models/Manual.php
+index f2182e6..ee95283 100644
+--- a/app/Models/Manual.php
++++ b/app/Models/Manual.php
+@@ -9,7 +9,7 @@
+ class Manual extends Model
+ {
+     protected $fillable = [
+-        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer', 'brand_catagory'
++        'brand_id', 'name', 'filesize', 'originUrl', 'popularity', 'filename', 'downloadedServer'
+     ];
+     use HasFactory;
+ 
+diff --git a/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php b/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php
+deleted file mode 100644
+index 268d691..0000000
+--- a/database/migrations/2025_10_06_073240_add_catogory_to_manuals_table.php
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-return new class extends Migration
+-{
+-    /**
+-     * Run the migrations.
+-     */
+-    public function up(): void
+-    {
+-        Schema::table('manuals', function (Blueprint $table) {
+-            $table->string("catagory");
+-        });
+-    }
+-
+-    /**
+-     * Reverse the migrations.
+-     */
+-    public function down(): void
+-    {
+-        Schema::table('manuals', function (Blueprint $table) {
+-            //
+-        });
+-    }
+-};
+diff --git a/database/seeders/BrandSeeder.php b/database/seeders/BrandSeeder.php
+deleted file mode 100644
+index 22c7bed..0000000
+--- a/database/seeders/BrandSeeder.php
++++ /dev/null
+@@ -1,23 +0,0 @@
+-<?php
+-
+-namespace Database\Seeders;
+-
+-use Illuminate\Database\Seeder;
+-use Illuminate\Support\Facades\DB;
+-
+-class BrandSeeder extends Seeder
+-{
+-    /**
+-     * Run the database seeds.
+-     */
+-    public function run(): void
+-    {
+-        DB::table('brands')->insert([
+-            ['name' => 'Apple', 'created_at' => now(), 'updated_at' => now()],
+-            ['name' => 'Samsung', 'created_at' => now(), 'updated_at' => now()],
+-            ['name' => 'Sony', 'created_at' => now(), 'updated_at' => now()],
+-            ['name' => 'LG', 'created_at' => now(), 'updated_at' => now()],
+-            ['name' => 'Microsoft', 'created_at' => now(), 'updated_at' => now()],
+-        ]);
+-    }
+-}
+diff --git a/database/seeders/ManualSeeder.php b/database/seeders/ManualSeeder.php
+deleted file mode 100644
+index 86c6fa9..0000000
+--- a/database/seeders/ManualSeeder.php
++++ /dev/null
+@@ -1,78 +0,0 @@
+-<?php
+-
+-namespace Database\Seeders;
+-
+-use Illuminate\Database\Seeder;
+-use Illuminate\Support\Facades\DB;
+-
+-class ManualSeeder extends Seeder
+-{
+-    /**
+-     * Run the database seeds.
+-     */
+-    public function run(): void
+-    {
+-        DB::table('manuals')->insert([
+-            [
+-                'brand_id' => 1,
+-                'name' => 'iPhone 15 User Guide',
+-                'filesize' => 2048000,
+-                'originUrl' => 'https://example.com/manuals/apple/iphone15.pdf',
+-                'filename' => 'iphone15_user_guide.pdf',
+-                'downloadedServer' => 'server-1',
+-                'popularity' => 95,
+-                'catagory' => 'Smartphone',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'brand_id' => 2,
+-                'name' => 'Galaxy S23 User Manual',
+-                'filesize' => 3050000,
+-                'originUrl' => 'https://example.com/manuals/samsung/galaxy_s23.pdf',
+-                'filename' => 'galaxy_s23_manual.pdf',
+-                'downloadedServer' => 'server-2',
+-                'popularity' => 87,
+-                'catagory' => 'Smartphone',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'brand_id' => 3,
+-                'name' => 'Sony Bravia Setup Guide',
+-                'filesize' => 1250000,
+-                'originUrl' => 'https://example.com/manuals/sony/bravia_setup.pdf',
+-                'filename' => 'bravia_setup.pdf',
+-                'downloadedServer' => 'server-1',
+-                'popularity' => 73,
+-                'catagory' => 'Television',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'brand_id' => 4,
+-                'name' => 'LG Refrigerator Manual',
+-                'filesize' => 2100000,
+-                'originUrl' => 'https://example.com/manuals/lg/fridge.pdf',
+-                'filename' => 'lg_fridge_manual.pdf',
+-                'downloadedServer' => 'server-3',
+-                'popularity' => 55,
+-                'catagory' => 'Appliance',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'brand_id' => 5,
+-                'name' => 'Surface Pro 9 Guide',
+-                'filesize' => 1780000,
+-                'originUrl' => 'https://example.com/manuals/microsoft/surface_pro9.pdf',
+-                'filename' => 'surface_pro9_guide.pdf',
+-                'downloadedServer' => 'server-2',
+-                'popularity' => 62,
+-                'catagory' => 'Laptop',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-        ]);
+-    }
+-}
+diff --git a/database/seeders/UserSeeder.php b/database/seeders/UserSeeder.php
+deleted file mode 100644
+index a8c0b7e..0000000
+--- a/database/seeders/UserSeeder.php
++++ /dev/null
+@@ -1,36 +0,0 @@
+-<?php
+-
+-namespace Database\Seeders;
+-
+-use Illuminate\Database\Seeder;
+-use Illuminate\Support\Facades\DB;
+-
+-class UserSeeder extends Seeder
+-{
+-    /**
+-     * Run the database seeds.
+-     */
+-    public function run(): void
+-    {
+-        DB::table('user')->insert([
+-            [
+-                'name' => 'Alice Johnson',
+-                'email' => 'alice@example.com',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'name' => 'Bob Smith',
+-                'email' => 'bob@example.com',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-            [
+-                'name' => 'Charlie Brown',
+-                'email' => 'charlie@example.com',
+-                'created_at' => now(),
+-                'updated_at' => now(),
+-            ],
+-        ]);
+-    }
+-}
+```
+
+</details>
+
+
 ## added back env example
 - **Commit:** `b02e08f2c58b70d8b9d4b9ae8e7a73961ae22107`
 - **Date:** 2025-10-08 09:03:08 +0200
