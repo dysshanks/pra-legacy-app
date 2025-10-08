@@ -14,7 +14,7 @@
 
     <!-- Populairste handleidingen -->
     <div class="container mb-4">
-        <h3>zoek bij nummer</h3>
+        <h3>zoek bij letter</h3>
         <nav>
             @foreach(range('A', 'Z') as $letter)
                 <a href="{{ route('pages.byLetter', $letter) }}">{{ $letter }}</a>
