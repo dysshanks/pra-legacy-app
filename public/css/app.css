@@ -10049,7 +10049,6 @@ a.text-dark:hover, a.text-dark:focus {
 .footer-main
 {
     padding: 2em;
-    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;

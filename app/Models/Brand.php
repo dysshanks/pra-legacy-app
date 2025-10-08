@@ -9,10 +9,14 @@ class Brand extends Model
 {
     use HasFactory;
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function getNameUrlEncodedAttribute()
     {
         $name_url_encoded = str_replace('/','',$this->name);
-
         return $name_url_encoded;
     }
 }

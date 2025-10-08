@@ -53,6 +53,9 @@ Route::get('/brands/{letter}', [BrandController::class, 'byLetter'])
     ->where('letter', '[A-Z]')
     ->name('pages.byLetter');
 
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+
 
 Route::get('/datafeeds/{brand_slug}.xml', [RedirectController::class, 'datafeed']);
 
