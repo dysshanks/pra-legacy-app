@@ -1,5 +1,248 @@
 
 ## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+- **Commit:** `aca2c58d92cbfa401520718ea397b8ffc40ab32d`
+- **Date:** 2025-10-08 10:02:52 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit aca2c58d92cbfa401520718ea397b8ffc40ab32d
+Merge: 1fedd07 895049f
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit aca2c58d92cbfa401520718ea397b8ffc40ab32d
+Merge: 1fedd07 895049f
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 10:02:52 2025 +0200
+
+    Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+
+```
+
+</details>
+
+## added categories
+- **Commit:** `1fedd0720755ef4224d4cfa9917f072eaa84c894`
+- **Date:** 2025-10-08 10:02:42 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 1fedd0720755ef4224d4cfa9917f072eaa84c894
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 10:02:42 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 1fedd0720755ef4224d4cfa9917f072eaa84c894
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 10:02:42 2025 +0200
+
+    added categories
+
+diff --git a/app/Http/Controllers/CategoryController.php b/app/Http/Controllers/CategoryController.php
+new file mode 100644
+index 0000000..a69d67f
+--- /dev/null
++++ b/app/Http/Controllers/CategoryController.php
+@@ -0,0 +1,20 @@
++<?php
++
++namespace App\Http\Controllers;
++
++use App\Models\Category;
++
++class CategoryController extends Controller
++{
++    public function index()
++    {
++        $categories = Category::with('brands')->orderBy('name')->get();
++        return view('pages.categories_list', compact('categories'));
++    }
++
++    public function show($id)
++    {
++        $category = Category::with('brands')->findOrFail($id);
++        return view('pages.product_category_brands', compact('category'));
++    }
++}
+diff --git a/app/Models/Brand.php b/app/Models/Brand.php
+index 0c61c71..98f0b20 100644
+--- a/app/Models/Brand.php
++++ b/app/Models/Brand.php
+@@ -9,10 +9,14 @@ class Brand extends Model
+ {
+     use HasFactory;
+ 
++    public function category()
++    {
++        return $this->belongsTo(Category::class);
++    }
++
+     public function getNameUrlEncodedAttribute()
+     {
+         $name_url_encoded = str_replace('/','',$this->name);
+-
+         return $name_url_encoded;
+     }
+ }
+diff --git a/app/Models/Category.php b/app/Models/Category.php
+new file mode 100644
+index 0000000..daf03cd
+--- /dev/null
++++ b/app/Models/Category.php
+@@ -0,0 +1,18 @@
++<?php
++
++namespace App\Models;
++
++use Illuminate\Database\Eloquent\Factories\HasFactory;
++use Illuminate\Database\Eloquent\Model;
++
++class Category extends Model
++{
++    use HasFactory;
++
++    protected $fillable = ['name'];
++
++    public function brands()
++    {
++        return $this->hasMany(Brand::class);
++    }
++}
+diff --git a/database/migrations/2025_10_08_074926_create_categories_table.php b/database/migrations/2025_10_08_074926_create_categories_table.php
+new file mode 100644
+index 0000000..d81dd57
+--- /dev/null
++++ b/database/migrations/2025_10_08_074926_create_categories_table.php
+@@ -0,0 +1,31 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    public function up(): void
++    {
++        Schema::create('categories', function (Blueprint $table) {
++            $table->id();
++            $table->string('name');
++            $table->timestamps();
++        });
++
++        Schema::table('brands', function (Blueprint $table) {
++            $table->unsignedBigInteger('category_id')->nullable()->after('id');
++            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
++        });
++    }
++
++    public function down(): void
++    {
++        Schema::table('brands', function (Blueprint $table) {
++            $table->dropForeign(['category_id']);
++            $table->dropColumn('category_id');
++        });
++        Schema::dropIfExists('categories');
++    }
++};
+diff --git a/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php b/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php
+new file mode 100644
+index 0000000..e5ea68a
+--- /dev/null
++++ b/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php
+@@ -0,0 +1,28 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Support\Facades\DB;
++use Illuminate\Support\Carbon;
++
++class AssignBrandsToDefaultCategory extends Migration
++{
++    public function up()
++    {
++        $categoryId = DB::table('categories')->where('name', 'Default')->value('id');
++        if (!$categoryId) {
++            $categoryId = DB::table('categories')->insertGetId([
++                'name' => 'Default',
++                'created_at' => Carbon::now(),
++                'updated_at' => Carbon::now(),
++            ]);
++        }
++
++        DB::table('brands')->update(['category_id' => $categoryId]);
++    }
++
++    public function down()
++    {
++        DB::table('brands')->update(['category_id' => null]);
++        DB::table('categories')->where('name', 'Default')->delete();
++    }
++}
+diff --git a/public/css/app.css b/public/css/app.css
+index 471e94c..37aaf88 100644
+--- a/public/css/app.css
++++ b/public/css/app.css
+@@ -10049,7 +10049,6 @@ .button:hover
+ .footer-main
+ {
+     padding: 2em;
+-    position: fixed;
+     left: 0;
+     bottom: 0;
+     width: 100%;
+diff --git a/resources/views/pages/product_category_brands.blade.php b/resources/views/pages/product_category_brands.blade.php
+index 4953c58..c7d9a3d 100644
+--- a/resources/views/pages/product_category_brands.blade.php
++++ b/resources/views/pages/product_category_brands.blade.php
+@@ -1,5 +1,15 @@
+-@extends('pages.homepage')
++<x-layouts.app>
++    <x-slot:breadcrumb>
++        <li><a href="{{ route('categories.index') }}">Categories</a></li>
++        <li>{{ $category->name }}</li>
++    </x-slot:breadcrumb>
+ 
+-@section(
+-	'title', 'Bijna alle merken...'
+-)
++    <h1>{{ $category->name }} Brands</h1>
++    <ul>
++        @foreach($category->brands as $brand)
++            <li>
++                <a href="/{{ $brand->id }}/{{ $brand->getNameUrlEncodedAttribute() }}/">{{ $brand->name }}</a>
++            </li>
++        @endforeach
++    </ul>
++</x-layouts.app>
+diff --git a/routes/web.php b/routes/web.php
+index a7e74b5..12aec67 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -53,6 +53,9 @@
+     ->where('letter', '[A-Z]')
+     ->name('pages.byLetter');
+ 
++Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
++Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
++
+ 
+ Route::get('/datafeeds/{brand_slug}.xml', [RedirectController::class, 'datafeed']);
+ 
+```
+
+</details>
+
+
+## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
 - **Commit:** `a03336f27cc44a843c80ab0cffc183551c669550`
 - **Date:** 2025-10-08 09:33:06 +0200
 - **Author:** dysshanks
