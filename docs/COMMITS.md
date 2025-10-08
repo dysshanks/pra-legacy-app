@@ -1,4 +1,102 @@
 
+## Merge branch 'Ticket-9,10,11'
+- **Commit:** `b0209813e479f0b5073918555fc7af8d80eac4b0`
+- **Date:** 2025-10-08 08:31:41 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit b0209813e479f0b5073918555fc7af8d80eac4b0
+Merge: 96aa099 3988fbc
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit b0209813e479f0b5073918555fc7af8d80eac4b0
+Merge: 96aa099 3988fbc
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 08:31:41 2025 +0200
+
+    Merge branch 'Ticket-9,10,11'
+
+```
+
+</details>
+
+## Refactor locale handling in LocaleController and update language selection in navbar
+- **Commit:** `3988fbcd604ca8d3aa3b672feec74ef304b920af`
+- **Date:** 2025-10-07 14:47:01 +0100
+- **Author:** xavi
+
+### Preview (first 3 lines of changes)
+```diff
+commit 3988fbcd604ca8d3aa3b672feec74ef304b920af
+Author: xavi <76852887+Ksaavie@users.noreply.github.com>
+Date:   Tue Oct 7 14:47:01 2025 +0100
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 3988fbcd604ca8d3aa3b672feec74ef304b920af
+Author: xavi <76852887+Ksaavie@users.noreply.github.com>
+Date:   Tue Oct 7 14:47:01 2025 +0100
+
+    Refactor locale handling in LocaleController and update language selection in navbar
+
+diff --git a/app/Http/Controllers/LocaleController.php b/app/Http/Controllers/LocaleController.php
+index 1c58aa5..f32eb98 100644
+--- a/app/Http/Controllers/LocaleController.php
++++ b/app/Http/Controllers/LocaleController.php
+@@ -16,7 +16,7 @@ public function changeLocale($language_slug, Request $request)
+             $request->session()->put('locale', $language_slug);
+         }
+ 
+-        return redirect()->route('home');
++        return redirect()->back();
+     }
+     /* public function changeLocale(Request $request)
+     {
+diff --git a/resources/views/components/layouts/app.blade.php b/resources/views/components/layouts/app.blade.php
+index fd9fb2c..2817ddf 100644
+--- a/resources/views/components/layouts/app.blade.php
++++ b/resources/views/components/layouts/app.blade.php
+@@ -1,5 +1,5 @@
+ <!DOCTYPE html>
+-<html lang="en">
++<html lang="{{ app()->getLocale() }}">
+ <head>
+     <x-head/>
+ </head>
+diff --git a/resources/views/components/navbar.blade.php b/resources/views/components/navbar.blade.php
+index a1965ca..122ad21 100644
+--- a/resources/views/components/navbar.blade.php
++++ b/resources/views/components/navbar.blade.php
+@@ -21,5 +21,17 @@
+ 
+ 
+         </div><!--/.navbar-collapse -->
++        <div class="ml-auto d-flex align-items-center">
++            <table class="table table-sm table-borderless mb-0 text-right">
++                <tr>
++                    <td class="p-0 pr-2">
++                        <a href="/language/en/" class="{{ app()->getLocale() === 'en' ? 'font-weight-bold text-white' : 'text-muted' }}">EN</a>
++                    </td>
++                    <td class="p-0">
++                        <a href="/language/nl/" class="{{ app()->getLocale() === 'nl' ? 'font-weight-bold text-white' : 'text-muted' }}">NL</a>
++                    </td>
++                </tr>
++            </table>
++        </div>
+     </div>
+ </nav>
+```
+
+</details>
+
+
 ## small typo fix
 - **Commit:** `f6760449f7d005e71c5b8c38eb6da100821a7e8d`
 - **Date:** 2025-10-06 09:53:15 +0200
