@@ -1,4 +1,69 @@
 
+## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+- **Commit:** `fde25919a89757c4e5b786287cf498421d0fa5d9`
+- **Date:** 2025-10-08 08:50:37 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit fde25919a89757c4e5b786287cf498421d0fa5d9
+Merge: 19c270b 8a65545
+Author: dysshanks <ryanvdvorst@outlook.com>
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit fde25919a89757c4e5b786287cf498421d0fa5d9
+Merge: 19c270b 8a65545
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 08:50:37 2025 +0200
+
+    Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
+
+```
+
+</details>
+
+## is nu bij letter
+- **Commit:** `19c270b06aea0fc914fda5a6e51f5b6e82b1a8c4`
+- **Date:** 2025-10-08 08:50:15 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 19c270b06aea0fc914fda5a6e51f5b6e82b1a8c4
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 08:50:15 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 19c270b06aea0fc914fda5a6e51f5b6e82b1a8c4
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Wed Oct 8 08:50:15 2025 +0200
+
+    is nu bij letter
+
+diff --git a/resources/views/pages/homepage.blade.php b/resources/views/pages/homepage.blade.php
+index 2ba4d95..81f11a2 100644
+--- a/resources/views/pages/homepage.blade.php
++++ b/resources/views/pages/homepage.blade.php
+@@ -14,7 +14,7 @@
+ 
+     <!-- Populairste handleidingen -->
+     <div class="container mb-4">
+-        <h3>zoek bij nummer</h3>
++        <h3>zoek bij letter</h3>
+         <nav>
+             @foreach(range('A', 'Z') as $letter)
+                 <a href="{{ route('pages.byLetter', $letter) }}">{{ $letter }}</a>
+```
+
+</details>
+
+
 ## Merge branch 'Ticket-9,10,11'
 - **Commit:** `b0209813e479f0b5073918555fc7af8d80eac4b0`
 - **Date:** 2025-10-08 08:31:41 +0200
