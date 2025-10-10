@@ -1,4 +1,166 @@
 
+## db
+- **Commit:** `2b1bc8dc9046cf7af07c00d73ac3564d37ae9f0b`
+- **Date:** 2025-10-10 11:19:07 +0200
+- **Author:** dysshanks
+
+### Preview (first 3 lines of changes)
+```diff
+commit 2b1bc8dc9046cf7af07c00d73ac3564d37ae9f0b
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Fri Oct 10 11:19:07 2025 +0200
+```
+
+<details><summary>Full changes</summary>
+
+```diff
+commit 2b1bc8dc9046cf7af07c00d73ac3564d37ae9f0b
+Author: dysshanks <ryanvdvorst@outlook.com>
+Date:   Fri Oct 10 11:19:07 2025 +0200
+
+    db
+
+diff --git a/database/migrations/2025_10_08_074926_create_categories_table.php b/database/migrations/2025_10_08_074926_create_categories_table.php
+deleted file mode 100644
+index d81dd57..0000000
+--- a/database/migrations/2025_10_08_074926_create_categories_table.php
++++ /dev/null
+@@ -1,31 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Database\Schema\Blueprint;
+-use Illuminate\Support\Facades\Schema;
+-
+-return new class extends Migration
+-{
+-    public function up(): void
+-    {
+-        Schema::create('categories', function (Blueprint $table) {
+-            $table->id();
+-            $table->string('name');
+-            $table->timestamps();
+-        });
+-
+-        Schema::table('brands', function (Blueprint $table) {
+-            $table->unsignedBigInteger('category_id')->nullable()->after('id');
+-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+-        });
+-    }
+-
+-    public function down(): void
+-    {
+-        Schema::table('brands', function (Blueprint $table) {
+-            $table->dropForeign(['category_id']);
+-            $table->dropColumn('category_id');
+-        });
+-        Schema::dropIfExists('categories');
+-    }
+-};
+diff --git a/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php b/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php
+deleted file mode 100644
+index e5ea68a..0000000
+--- a/database/migrations/2025_10_08_080049_assing_brands_to_default_category.php
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<?php
+-
+-use Illuminate\Database\Migrations\Migration;
+-use Illuminate\Support\Facades\DB;
+-use Illuminate\Support\Carbon;
+-
+-class AssignBrandsToDefaultCategory extends Migration
+-{
+-    public function up()
+-    {
+-        $categoryId = DB::table('categories')->where('name', 'Default')->value('id');
+-        if (!$categoryId) {
+-            $categoryId = DB::table('categories')->insertGetId([
+-                'name' => 'Default',
+-                'created_at' => Carbon::now(),
+-                'updated_at' => Carbon::now(),
+-            ]);
+-        }
+-
+-        DB::table('brands')->update(['category_id' => $categoryId]);
+-    }
+-
+-    public function down()
+-    {
+-        DB::table('brands')->update(['category_id' => null]);
+-        DB::table('categories')->where('name', 'Default')->delete();
+-    }
+-}
+diff --git a/database/migrations/2025_10_08_081949_add_categories_to_brands_table.php b/database/migrations/2025_10_08_081949_add_categories_to_brands_table.php
+new file mode 100644
+index 0000000..e27a352
+--- /dev/null
++++ b/database/migrations/2025_10_08_081949_add_categories_to_brands_table.php
+@@ -0,0 +1,59 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++use Illuminate\Support\Facades\DB;
++
++class AddCategoriesToBrandsTable extends Migration
++{
++    public function up()
++    {
++        Schema::create('categories', function (Blueprint $table) {
++            $table->id();
++            $table->string('name')->unique();
++            $table->timestamps();
++        });
++
++        DB::table('categories')->insert([
++            ['name' => 'Electronics', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'Audio/Video', 'created_at' => now(), 'updated_at' => now()],
++            ['name' => 'Machinery/Tools', 'created_at' => now(), 'updated_at' => now()],
++        ]);
++
++        Schema::table('brands', function (Blueprint $table) {
++            $table->foreignId('category_id')->nullable()->after('name')->constrained('categories')->nullOnDelete();
++        });
++
++        $categories = DB::table('categories')->pluck('id', 'name');
++
++
++        $electronicsBrands = [
++            'BenQ', 'Garmin', 'IOGear', 'AOC', 'ALCATEL Mobile Phones', 'Huawei', 'ZTE', 'Motorola',
++            'Palm', 'LG Electronics', 'Samsung', 'Sony', 'Pantech', 'Citizen', 'Aastra Telecom', 'RCA',
++            'VTech', 'Uniden', 'AT&T', 'GE', 'Toshiba', 'Dell', 'Fujitsu', 'Lenovo', 'Apple'
++        ];
++
++        DB::table('brands')->whereIn('name', $electronicsBrands)->update(['category_id' => $categories['Electronics']]);
++        $audioVideoBrands = [
++            'Humminbird', 'Furuno', 'DigiTech', 'Yamaha', 'Samson', 'JBL', 'Crown Audio', 'MTX Audio', 'Musica', 'DCM Speakers'
++        ];
++
++        DB::table('brands')->whereIn('name', $audioVideoBrands)->update(['category_id' => $categories['Audio/Video']]);
++        $machineryBrands = [
++            'TPI Corporation', 'Land Pride', 'Kohler', 'ProForm', 'Grizzly', 'Carl Zeiss', 'Kowa', 'Pioneer'
++        ];
++
++        DB::table('brands')->whereIn('name', $machineryBrands)->update(['category_id' => $categories['Machinery/Tools']]);
++    }
++
++    public function down()
++    {
++        Schema::table('brands', function (Blueprint $table) {
++            $table->dropForeign(['category_id']);
++            $table->dropColumn('category_id');
++        });
++
++        Schema::dropIfExists('categories');
++    }
++}
+```
+
+</details>
+
+
 ## Merge branch 'main' of https://github.com/dysshanks/pra-legacy-app
 - **Commit:** `aca2c58d92cbfa401520718ea397b8ffc40ab32d`
 - **Date:** 2025-10-08 10:02:52 +0200
